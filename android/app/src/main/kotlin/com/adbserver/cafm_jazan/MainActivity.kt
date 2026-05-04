@@ -1,4 +1,4 @@
-package adbserver.com.cafm_jazan
+package adbserver.com.cafmjazan
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -4,7 +4,7 @@
 
 Your Flutter app has been configured for Google Play release with the following updates:
 
-- ✅ Package name updated: `adbserver.com.cafm_jazan`
+- ✅ Package name updated: `adbserver.com.cafmjazan`
 - ✅ Version updated: `1.0.0+4`
 - ✅ Signing configuration added
 - ✅ ProGuard rules for code obfuscation created
@@ -126,7 +126,7 @@ flutter build apk --release --split-per-abi
 
 | Setting | Value |
 |---------|-------|
-| **Package Name** | adbserver.com.cafm_jazan |
+| **Package Name** | adbserver.com.cafmjazan |
 | **App Version** | 1.0.0 |
 | **Version Code** | 4 |
 | **Min SDK** | 21 (Android 5.0) |

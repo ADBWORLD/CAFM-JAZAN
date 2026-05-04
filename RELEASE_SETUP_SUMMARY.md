@@ -4,7 +4,7 @@
 
 ### 1. **Package Name Updated**
    - Old: `com.example.cafm_mobile_app`
-   - New: `adbserver.com.cafm_jazan`
+   - New: `adbserver.com.cafmjazan`
    - File: [android/app/build.gradle.kts](android/app/build.gradle.kts)
 
 ### 2. **Version Updated**
@@ -123,7 +123,7 @@ Before uploading to Google Play:
 - [ ] Tested release APK on actual device
 - [ ] No console errors or warnings
 - [ ] App version is `1.0.0+4`
-- [ ] Package name is `adbserver.com.cafm_jazan`
+- [ ] Package name is `adbserver.com.cafmjazan`
 - [ ] Privacy policy URL ready
 - [ ] App screenshots & promotional images ready
 - [ ] App description & details ready

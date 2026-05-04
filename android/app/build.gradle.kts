@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "adbserver.com.cafm_jazan"
+    namespace = "adbserver.com.cafmjazan"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
@@ -29,7 +29,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "adbserver.com.cafm_jazan"
+        applicationId = "adbserver.com.cafmjazan"
         minSdk = 21
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

@@ -6,6 +6,8 @@ workflows:
       flutter: stable
       xcode: latest
       cocoapods: default
+      groups:
+        - ios_credentials
       ios_signing:
         distribution_type: app_store
         bundle_identifier: adbserver.com.cafmjazan
@@ -20,10 +22,12 @@ workflows:
 
       - name: Flutter build iOS
         script: |
-          flutter build ipa --release
+          flutter build ipa --release \
+            --export-options-plist=/Users/builder/export_options.plist
 
     artifacts:
       - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
 
     publishing:
       app_store_connect:

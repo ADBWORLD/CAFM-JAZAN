@@ -8,7 +8,7 @@ workflows:
       cocoapods: default
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.adbworld.cafmjazan  # ← CHANGE THIS to your Bundle ID
+        bundle_identifier: adbserver.com.cafmjazan  # ← CHANGE THIS to your Bundle ID
       vars:
         APP_STORE_CONNECT_ISSUER_ID: Encrypted(...)      # ← Add after setup
         APP_STORE_CONNECT_KEY_IDENTIFIER: Encrypted(...) # ← Add after setup

@@ -20,6 +20,32 @@ workflows:
         script: |
           find . -name "Podfile" -execdir pod install \;
 
+      - name: Create export options plist
+        script: |
+          cat > /Users/builder/export_options.plist << PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>teamID</key>
+            <string>66HVD3BX7Q</string>
+            <key>uploadBitcode</key>
+            <false/>
+            <key>uploadSymbols</key>
+            <true/>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>adbserver.com.cafmjazan</key>
+              <string>CAFM Jazan App Store</string>
+            </dict>
+          </dict>
+          </plist>
+          PLIST
+
       - name: Flutter build iOS
         script: |
           flutter build ipa --release \

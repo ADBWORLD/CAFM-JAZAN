@@ -8,11 +8,7 @@ workflows:
       cocoapods: default
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: adbserver.com.cafmjazan  # ← CHANGE THIS to your Bundle ID
-      vars:
-        APP_STORE_CONNECT_ISSUER_ID: Encrypted(...)      # ← Add after setup
-        APP_STORE_CONNECT_KEY_IDENTIFIER: Encrypted(...) # ← Add after setup
-        APP_STORE_CONNECT_PRIVATE_KEY: Encrypted(...)    # ← Add after setup
+        bundle_identifier: adbserver.com.cafmjazan
 
     scripts:
       - name: Get Flutter packages
@@ -24,8 +20,7 @@ workflows:
 
       - name: Flutter build iOS
         script: |
-          flutter build ipa --release \
-            --export-options-plist=/Users/builder/export_options.plist
+          flutter build ipa --release
 
     artifacts:
       - build/ios/ipa/*.ipa
@@ -36,4 +31,4 @@ workflows:
         key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
         issuer_id: $APP_STORE_CONNECT_ISSUER_ID
         submit_to_testflight: false
-        submit_to_app_store: false  # Set true when ready to auto-publish
+        submit_to_app_store: false

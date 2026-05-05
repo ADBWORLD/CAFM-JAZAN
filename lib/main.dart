@@ -14,14 +14,24 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
-  // FIX 1: Wrap everything in a zone to catch all async errors in release mode
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Android notification settings
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('@mipmap/ic_launcher');
 
-  const InitializationSettings initializationSettings =
-      InitializationSettings(android: initializationSettingsAndroid);
+  // iOS notification settings
+  const DarwinInitializationSettings initializationSettingsIOS =
+      DarwinInitializationSettings(
+    requestAlertPermission: true,
+    requestBadgePermission: true,
+    requestSoundPermission: true,
+  );
+
+  const InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsIOS,
+  );
 
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
@@ -74,26 +84,19 @@ class _WebViewScreenState extends State<WebViewScreen> {
   void initState() {
     super.initState();
 
-    // FIX 2: Set up WebViewController with proper settings for release mode
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageStarted: (url) {
-            if (mounted) {
-              setState(() => isLoading = true);
-            }
+            if (mounted) setState(() => isLoading = true);
           },
           onPageFinished: (url) {
-            if (mounted) {
-              setState(() => isLoading = false);
-            }
+            if (mounted) setState(() => isLoading = false);
           },
           onWebResourceError: (error) {
             debugPrint('WebView error: ${error.description}');
-            if (mounted) {
-              setState(() => isLoading = false);
-            }
+            if (mounted) setState(() => isLoading = false);
           },
         ),
       )
@@ -103,13 +106,11 @@ class _WebViewScreenState extends State<WebViewScreen> {
   }
 
   Future<void> _initApp() async {
-    // Run all init steps safely in sequence
     await _checkInternetConnection();
     await _requestNotificationPermission();
     await getDeviceId();
   }
 
-  // FIX 3: connectivity_plus v6+ returns List<ConnectivityResult>, not a single value
   Future<void> _checkInternetConnection() async {
     try {
       final List<ConnectivityResult> results =
@@ -122,10 +123,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
       }
     } catch (e) {
       debugPrint('Connectivity check error: $e');
-      // Default to true so we don't block the app if the check itself fails
-      if (mounted) {
-        setState(() => isInternetAvailable = true);
-      }
+      if (mounted) setState(() => isInternetAvailable = true);
     }
   }
 
@@ -136,6 +134,16 @@ class _WebViewScreenState extends State<WebViewScreen> {
         if (androidInfo.version.sdkInt >= 33) {
           await Permission.notification.request();
         }
+      } else if (Platform.isIOS) {
+        // Request iOS notification permission
+        await flutterLocalNotificationsPlugin
+            .resolvePlatformSpecificImplementation<
+                IOSFlutterLocalNotificationsPlugin>()
+            ?.requestPermissions(
+              alert: true,
+              badge: true,
+              sound: true,
+            );
       }
     } catch (e) {
       debugPrint('Notification permission error: $e');
@@ -168,18 +176,13 @@ class _WebViewScreenState extends State<WebViewScreen> {
           'https://adb-server.com/CAFM/Jizan?device_id=$id';
 
       await _controller.loadRequest(Uri.parse(targetUrl));
-
-      // FIX 4: Only fetch notifications after deviceId is confirmed set
       await fetchNotificationFromApi(id);
     } catch (e) {
       debugPrint('getDeviceId error: $e');
-      if (mounted) {
-        setState(() => isLoading = false);
-      }
+      if (mounted) setState(() => isLoading = false);
     }
   }
 
-  // FIX 5: Pass deviceId as parameter to avoid race condition
   Future<void> fetchNotificationFromApi(String id) async {
     if (id.isEmpty) return;
 
@@ -192,7 +195,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
           );
 
       if (response.statusCode == 200) {
-        // FIX 6: Guard against non-JSON or empty responses that crash in release
         final String body = response.body.trim();
         if (body.isEmpty || body == 'null' || body == '[]') return;
 
@@ -218,9 +220,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
             payload,
           );
         }
-      } else {
-        debugPrint(
-            'Failed to load notifications. Status: ${response.statusCode}');
       }
     } catch (e) {
       debugPrint('Error fetching notifications: $e');
@@ -238,8 +237,16 @@ class _WebViewScreenState extends State<WebViewScreen> {
       priority: Priority.high,
     );
 
-    const NotificationDetails notificationDetails =
-        NotificationDetails(android: androidDetails);
+    const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    const NotificationDetails notificationDetails = NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails,
+    );
 
     await flutterLocalNotificationsPlugin.show(
       notificationId,
@@ -268,9 +275,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
               ElevatedButton(
                 onPressed: () async {
                   await _checkInternetConnection();
-                  if (isInternetAvailable) {
-                    await _initApp();
-                  }
+                  if (isInternetAvailable) await _initApp();
                 },
                 child: const Text('Retry'),
               ),
